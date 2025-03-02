@@ -32,7 +32,10 @@ struct CallView: View {
             Text(speechRec.userInput)
             Spacer()
             
-            Button(action: { presentedAsModal = false}) {
+            Button(action: {
+                deleteAiCall()
+                presentedAsModal = false
+            }) {
                 Label("End Call", systemImage: "phone.down")
             }
             .buttonStyle(.bordered)
@@ -52,6 +55,7 @@ struct CallView: View {
 }
 
 class SpeechHandler: ObservableObject {
+    // TODO make empty
     @Published private(set) var userInput = "Hello, what is your name?"
     private var recognizedTextTimer: Timer?
     
@@ -127,7 +131,7 @@ class SpeechHandler: ObservableObject {
             if let inputCopy = self?.userInput {
                 Task {
                     do {
-                        try await getAiResponse(input: inputCopy, completionHandler: { response in
+                        try await getResponse(input: inputCopy, completionHandler: { response in
                             // FIXME it somehow works twice
                             print(response)
                             if response.status == "OK" {
@@ -151,37 +155,37 @@ class SpeechHandler: ObservableObject {
     }
 }
 
-struct AiRequest: Encodable {
+struct PostRequest: Encodable {
     let user_id: UInt64
     let key: String
     let input: String
 }
 
-struct AiResponse: Decodable {
+struct PostResponse: Decodable {
     let answer: String
     let status: String
 }
 
-private func getAiResponse(input: String, completionHandler:@escaping (_ response:AiResponse)->Void) async throws -> Void {
+private func getResponse(input: String, completionHandler:@escaping (_ response:PostResponse)->Void) async throws -> Void {
     // TODO change url
     let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8080")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
     // TODO input actual user_id and key
-    request.httpBody = try? JSONEncoder().encode(AiRequest(user_id: 1, key: "api_key", input: input))
+    request.httpBody = try? JSONEncoder().encode(PostRequest(user_id: 1, key: "api_key", input: input))
 
     let session = URLSession.shared
     let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
         if let error = error {
             print(error)
         } else {
-            let httpResponse = response as? HTTPURLResponse
+            _ = response as? HTTPURLResponse
             // TODO check response status
         }
 
-        var result: AiResponse?
+        var result: PostResponse?
         do {
-            result = try JSONDecoder().decode(AiResponse.self, from: data ?? Data())
+            result = try JSONDecoder().decode(PostResponse.self, from: data ?? Data())
         }
         catch {
             // TODO actualy do smth
@@ -189,8 +193,49 @@ private func getAiResponse(input: String, completionHandler:@escaping (_ respons
         }
                 
         if let result = result {
-            print(result)
             completionHandler(result)
+        }
+    })
+
+    dataTask.resume()
+}
+
+struct DeleteRequest: Encodable {
+    let user_id: UInt64
+}
+
+struct DeleteResponse: Decodable {
+    let status: String
+}
+
+private func deleteAiCall() -> Void {
+    // TODO change url
+    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8080")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.httpMethod = "DELETE"
+    // TODO input actual user_id
+    request.httpBody = try? JSONEncoder().encode(DeleteRequest(user_id: 1))
+
+    let session = URLSession.shared
+    let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+        if let error = error {
+            print(error)
+        } else {
+            _ = response as? HTTPURLResponse
+            // TODO check response status
+        }
+
+        var result: DeleteResponse?
+        do {
+            result = try JSONDecoder().decode(DeleteResponse.self, from: data ?? Data())
+        }
+        catch {
+            // TODO actualy do smth
+            print("Failed to convert JSON \(error)")
+        }
+        if let result = result {
+            // TODO actually do smth
+            print(result.status)
         }
     })
 
