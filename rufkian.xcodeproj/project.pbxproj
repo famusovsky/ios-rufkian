@@ -9,8 +9,7 @@
 /* Begin PBXBuildFile section */
 		3F4605182D5E18E40083EC96 /* CallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4605172D5E18E40083EC96 /* CallView.swift */; };
 		3F46051A2D5E19070083EC96 /* CompanionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4605192D5E19070083EC96 /* CompanionView.swift */; };
-		3F46051C2D5E28030083EC96 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F46051B2D5E28030083EC96 /* LoginView.swift */; };
-		3F780B1C2D899CDC00D51595 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F780B1B2D899CDC00D51595 /* Router.swift */; };
+		3F780B202D89F8C100D51595 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F780B1F2D89F8C100D51595 /* User.swift */; };
 		3FF6AB5F2D590DFE00623917 /* rufkianApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FF6AB5E2D590DFE00623917 /* rufkianApp.swift */; };
 		3FF6AB652D590DFF00623917 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FF6AB642D590DFF00623917 /* Assets.xcassets */; };
 		3FF6AB682D590DFF00623917 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FF6AB672D590DFF00623917 /* Preview Assets.xcassets */; };
@@ -19,8 +18,7 @@
 /* Begin PBXFileReference section */
 		3F4605172D5E18E40083EC96 /* CallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallView.swift; sourceTree = "<group>"; };
 		3F4605192D5E19070083EC96 /* CompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionView.swift; sourceTree = "<group>"; };
-		3F46051B2D5E28030083EC96 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		3F780B1B2D899CDC00D51595 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		3F780B1F2D89F8C100D51595 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3FF6AB5B2D590DFE00623917 /* rufkian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rufkian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF6AB5E2D590DFE00623917 /* rufkianApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rufkianApp.swift; sourceTree = "<group>"; };
 		3FF6AB642D590DFF00623917 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -59,9 +57,8 @@
 			children = (
 				3FF6AB5E2D590DFE00623917 /* rufkianApp.swift */,
 				3F4605172D5E18E40083EC96 /* CallView.swift */,
+				3F780B1F2D89F8C100D51595 /* User.swift */,
 				3F4605192D5E19070083EC96 /* CompanionView.swift */,
-				3F780B1B2D899CDC00D51595 /* Router.swift */,
-				3F46051B2D5E28030083EC96 /* LoginView.swift */,
 				3FF6AB642D590DFF00623917 /* Assets.xcassets */,
 				3FF6AB662D590DFF00623917 /* Preview Content */,
 			);
@@ -146,10 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F46051C2D5E28030083EC96 /* LoginView.swift in Sources */,
+				3F780B202D89F8C100D51595 /* User.swift in Sources */,
 				3F4605182D5E18E40083EC96 /* CallView.swift in Sources */,
 				3F46051A2D5E19070083EC96 /* CompanionView.swift in Sources */,
-				3F780B1C2D899CDC00D51595 /* Router.swift in Sources */,
 				3FF6AB5F2D590DFE00623917 /* rufkianApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

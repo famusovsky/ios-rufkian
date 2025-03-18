@@ -10,26 +10,13 @@ import SwiftData
 
 @main
 struct rufkianApp: App {
-    @StateObject private var router = Router()
-    
     init() {
         HTTPCookieStorage.shared.cookieAcceptPolicy = .always
     }
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $router.path) {
-                EmptyView()
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .openLogin:
-                        LoginView()
-                    case .openCompanion:
-                        CompanionView()
-                    }
-                }
-            }
-            .environmentObject(router)
+            CompanionView()
         }
     }
 }
