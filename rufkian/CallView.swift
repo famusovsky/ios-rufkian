@@ -56,7 +56,7 @@ struct CallView: View {
 
 class SpeechHandler: ObservableObject {
     // TODO make empty
-    @Published private(set) var userInput = "Hello, what is your name?"
+    @Published private(set) var userInput = "Guten Tag, wie geht es dir?"
     private var recognizedTextTimer: Timer?
     
     let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "de"))
@@ -156,7 +156,7 @@ class SpeechHandler: ObservableObject {
 }
 
 struct PostRequest: Encodable {
-    let user_id: UInt64
+    let user_id: String
     let key: String
     let input: String
 }
@@ -172,7 +172,7 @@ private func getResponse(input: String, completionHandler:@escaping (_ response:
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
     // TODO input actual user_id and key
-    request.httpBody = try? JSONEncoder().encode(PostRequest(user_id: 1, key: "api_key", input: input))
+    request.httpBody = try? JSONEncoder().encode(PostRequest(user_id: "1", key: "api_key", input: input))
 
     let session = URLSession.shared
     let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
@@ -201,7 +201,8 @@ private func getResponse(input: String, completionHandler:@escaping (_ response:
 }
 
 struct DeleteRequest: Encodable {
-    let user_id: UInt64
+    let user_id: String
+    let key: String
 }
 
 struct DeleteResponse: Decodable {
@@ -214,7 +215,7 @@ private func deleteAiCall() -> Void {
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "DELETE"
     // TODO input actual user_id
-    request.httpBody = try? JSONEncoder().encode(DeleteRequest(user_id: 1))
+    request.httpBody = try? JSONEncoder().encode(DeleteRequest(user_id: "1", key: "api_key"))
 
     let session = URLSession.shared
     let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in

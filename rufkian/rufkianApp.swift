@@ -10,22 +10,26 @@ import SwiftData
 
 @main
 struct rufkianApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @StateObject private var router = Router()
+    
+    init() {
+        HTTPCookieStorage.shared.cookieAcceptPolicy = .always
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack(path: $router.path) {
+                EmptyView()
+                .navigationDestination(for: Route.self) { route in
+                    switch route {
+                    case .openLogin:
+                        LoginView()
+                    case .openCompanion:
+                        CompanionView()
+                    }
+                }
+            }
+            .environmentObject(router)
         }
-        .modelContainer(sharedModelContainer)
     }
 }
