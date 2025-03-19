@@ -45,6 +45,7 @@ struct WebView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.configuration.websiteDataStore.httpCookieStore.add(cookieSyncManager)
         webView.navigationDelegate = context.coordinator
+        webView.customUserAgent = "rufkian"
         webView.load(URLRequest(url: url))
         
         return webView
