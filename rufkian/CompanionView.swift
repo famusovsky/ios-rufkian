@@ -72,7 +72,7 @@ struct WebView: UIViewRepresentable {
             }
 
             print(url)
-            if url.absoluteString.starts(with: "https://mistral.ai/") {
+            if url.absoluteString.starts(with: "http://localhost:8080/ping") {
                 decisionHandler(.cancel)
                 parent.showingCall = true
             }
