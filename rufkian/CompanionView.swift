@@ -15,13 +15,8 @@ struct CompanionView: View {
         NavigationView {
             VStack {
                 Spacer()
-                WebView(url: URL(string: "http://localhost:8080")!)
+                WebView(url: URL(string: "http://localhost:8080")!, showingCall: $showingCall)
                 Spacer()
-                Button(action: { showingCall = true}) {
-                    Label("Call Ai", systemImage: "phone")
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.extraLarge)
                 .fullScreenCover(isPresented: $showingCall) {
                     CallView(presentedAsModal: $showingCall)
                         .interactiveDismissDisabled(true)
@@ -35,6 +30,7 @@ struct CompanionView: View {
 struct WebView: UIViewRepresentable {
     let url: URL
     let cookieSyncManager = CookieSyncManager()
+    @Binding var showingCall: Bool
     
     func makeUIView(context: Context) -> WKWebView  {
         let configuration = WKWebViewConfiguration()
@@ -48,13 +44,41 @@ struct WebView: UIViewRepresentable {
         
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.configuration.websiteDataStore.httpCookieStore.add(cookieSyncManager)
+        webView.navigationDelegate = context.coordinator
         webView.load(URLRequest(url: url))
         
         return webView
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        print("update")
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, WKNavigationDelegate {
+        var parent: WebView
+
+        init(_ parent: WebView) {
+            self.parent = parent
+        }
+
+        func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+            guard let url = (navigationResponse.response as! HTTPURLResponse).url else {
+                decisionHandler(.cancel)
+                return
+            }
+
+            print(url)
+            if url.absoluteString.starts(with: "https://mistral.ai/") {
+                decisionHandler(.cancel)
+                parent.showingCall = true
+            }
+            else {
+                decisionHandler(.allow)
+            }
+        }
     }
 }
 

@@ -29,7 +29,7 @@ func GetUserInfo() -> UserInfo {
     config.httpCookieAcceptPolicy = .always
     let session = URLSession(configuration: config)
     
-    let task = session.dataTask(with: URLRequest(url: URL(string: "http://localhost:8080/auth/user")!)) { data, response, error in
+    let task = session.dataTask(with: URLRequest(url: URL(string: "http://localhost:8080/user")!)) { data, response, error in
         if let error = error {
             print(error)
             return

@@ -29,14 +29,17 @@ struct CallView: View {
                 .onReceive(timer) { _ in timerString = Date().passedTime(from: startTime!) }
                 .font(Font.system(.largeTitle, design: .monospaced))
             
+            Text("Вы сказали: ")
             Text(speechRec.userInput)
             Spacer()
-            
+            Text("ИИ ответил: ")
+            Text(speechRec.aiOutput)
+            Spacer()
             Button(action: {
                 deleteAiCall()
                 presentedAsModal = false
             }) {
-                Label("End Call", systemImage: "phone.down")
+                Label("Завершить звонок", systemImage: "phone.down")
             }
             .buttonStyle(.bordered)
             .controlSize(.extraLarge)
@@ -57,6 +60,7 @@ struct CallView: View {
 class SpeechHandler: ObservableObject {
     // TODO make empty
     @Published private(set) var userInput = "Guten Tag, wie geht es dir?"
+    @Published private(set) var aiOutput = ""
     private var recognizedTextTimer: Timer?
     
     let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "de"))
@@ -136,8 +140,8 @@ class SpeechHandler: ObservableObject {
                 Task {
                     do {
                         try await getResponse(input: inputCopy, userInfo: userInfo, completionHandler: { response in
+                            self?.aiOutput = response.answer
                             // FIXME it somehow works twice
-                            print(response)
                             if response.status == "OK" {
                                 let utterance = AVSpeechUtterance(string: response.answer)
                                 utterance.pitchMultiplier = 1.0
@@ -171,6 +175,9 @@ struct PostResponse: Decodable {
 }
 
 private func getResponse(input: String, userInfo: UserInfo, completionHandler:@escaping (_ response:PostResponse)->Void) async throws -> Void {
+    if userInfo.IsEmpty() {
+        return
+    }
     // TODO change url
     let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8080")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
