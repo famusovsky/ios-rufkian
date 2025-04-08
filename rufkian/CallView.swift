@@ -90,14 +90,18 @@ class SpeechHandler: ObservableObject {
     }
     
     func stop() {
+        stopRecognition()
+        recognitionTask = nil
+        recognitionRequest = nil
+        recognizedTextTimer = nil
+    }
+    
+    func stopRecognition() {
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
-        recognitionTask?.cancel()
-        recognitionTask = nil
         recognitionRequest?.endAudio()
-        recognitionRequest = nil
+        recognitionTask?.cancel()
         recognizedTextTimer?.invalidate()
-        recognizedTextTimer = nil
     }
     
     func startRecognition() {
@@ -132,6 +136,12 @@ class SpeechHandler: ObservableObject {
         }
     }
     
+    func restartRecognition() {
+        self.userInput = ""
+        self.stopRecognition()
+        self.startRecognition()
+    }
+    
     private func resetTimer() {
         recognizedTextTimer?.invalidate()
         let userInfo = self.userInfo
@@ -158,7 +168,7 @@ class SpeechHandler: ObservableObject {
                     }
                 }
             }
-            self?.userInput = ""
+            self?.restartRecognition()
         }
     }
 }
