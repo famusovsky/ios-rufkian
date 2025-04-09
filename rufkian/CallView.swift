@@ -59,7 +59,7 @@ struct CallView: View {
 
 class SpeechHandler: ObservableObject {
     // TODO make empty
-    @Published private(set) var userInput = "Guten Tag, wie geht es dir?"
+    @Published private(set) var userInput = ""
     @Published private(set) var aiOutput = ""
     private var recognizedTextTimer: Timer?
     
@@ -68,14 +68,16 @@ class SpeechHandler: ObservableObject {
     var recognitionTask: SFSpeechRecognitionTask?
     let audioEngine = AVAudioEngine()
     let speechSynth = AVSpeechSynthesizer()
-    // TODO move user info somewhere else
-    let userInfo: UserInfo
-    
+
     private var cancellables = Set<AnyCancellable>()
     init() {
-        self.userInfo = GetUserInfo()
+        try! AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        try! AVAudioSession.sharedInstance().setActive(true)
+
         $userInput
             .sink { [weak self] newText in
+                print("new text", newText)
+                print("user input", self?.userInput)
                 if self?.userInput != "" {
                     self?.resetTimer()
                 }
@@ -90,17 +92,18 @@ class SpeechHandler: ObservableObject {
     }
     
     func stop() {
+        audioEngine.stop()
         stopRecognition()
+        recognitionTask?.cancel()
         recognitionTask = nil
         recognitionRequest = nil
         recognizedTextTimer = nil
     }
     
     func stopRecognition() {
-        audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest?.endAudio()
-        recognitionTask?.cancel()
+        recognitionTask?.finish()
         recognizedTextTimer?.invalidate()
     }
     
@@ -144,14 +147,12 @@ class SpeechHandler: ObservableObject {
     
     private func resetTimer() {
         recognizedTextTimer?.invalidate()
-        let userInfo = self.userInfo
-        recognizedTextTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] _ in
+        recognizedTextTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] _ in
             if let inputCopy = self?.userInput {
                 Task {
                     do {
-                        try await getResponse(input: inputCopy, userInfo: userInfo, completionHandler: { response in
+                        try await getResponse(input: inputCopy, completionHandler: { response in
                             self?.aiOutput = response.answer
-                            // FIXME it somehow works twice
                             if response.status == "OK" {
                                 let utterance = AVSpeechUtterance(string: response.answer)
                                 utterance.pitchMultiplier = 1.0
@@ -174,8 +175,6 @@ class SpeechHandler: ObservableObject {
 }
 
 struct PostRequest: Encodable {
-    let user_id: String
-    let key: String
     let input: String
 }
 
@@ -184,16 +183,14 @@ struct PostResponse: Decodable {
     let status: String
 }
 
-private func getResponse(input: String, userInfo: UserInfo, completionHandler:@escaping (_ response:PostResponse)->Void) async throws -> Void {
-    if userInfo.IsEmpty() {
-        return
-    }
-    // TODO change url
-    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8080")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+private func getResponse(input: String, completionHandler:@escaping (_ response:PostResponse)->Void) async throws -> Void {
+    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8888")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
-    // TODO input actual user_id and key
-    request.httpBody = try? JSONEncoder().encode(PostRequest(user_id: userInfo.id!, key: userInfo.key!, input: input))
+    for field in HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? []) {
+        request.setValue(field.value, forHTTPHeaderField: field.key)
+    }
+    request.httpBody = try? JSONEncoder().encode(PostRequest(input: input))
 
     let session = URLSession.shared
     let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
@@ -207,9 +204,7 @@ private func getResponse(input: String, userInfo: UserInfo, completionHandler:@e
         var result: PostResponse?
         do {
             result = try JSONDecoder().decode(PostResponse.self, from: data ?? Data())
-        }
-        catch {
-            // TODO actualy do smth
+        } catch {
             print("Failed to convert JSON \(error)")
         }
                 
@@ -221,26 +216,18 @@ private func getResponse(input: String, userInfo: UserInfo, completionHandler:@e
     dataTask.resume()
 }
 
-struct DeleteRequest: Encodable {
-    let user_id: String
-    let key: String
-}
 
 struct DeleteResponse: Decodable {
     let status: String
 }
 
 private func deleteAiCall() -> Void {
-    // TODO move GetUserInfo
-    let userInfo = GetUserInfo()
-    if userInfo.IsEmpty() {
-        return
-    }
-    
-    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8080")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8888")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    for field in HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? []) {
+        request.setValue(field.value, forHTTPHeaderField: field.key)
+    }
     request.httpMethod = "DELETE"
-    request.httpBody = try? JSONEncoder().encode(DeleteRequest(user_id: userInfo.id!, key: userInfo.key!))
 
     let session = URLSession.shared
     let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
