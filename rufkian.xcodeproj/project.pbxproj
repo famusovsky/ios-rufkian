@@ -17,6 +17,7 @@
 /* Begin PBXFileReference section */
 		3F4605172D5E18E40083EC96 /* CallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallView.swift; sourceTree = "<group>"; };
 		3F4605192D5E19070083EC96 /* CompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionView.swift; sourceTree = "<group>"; };
+		3FB52E152DB42E5C00166E64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3FF6AB5B2D590DFE00623917 /* rufkian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rufkian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF6AB5E2D590DFE00623917 /* rufkianApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rufkianApp.swift; sourceTree = "<group>"; };
 		3FF6AB642D590DFF00623917 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 		3FF6AB5D2D590DFE00623917 /* rufkian */ = {
 			isa = PBXGroup;
 			children = (
+				3FB52E152DB42E5C00166E64 /* Info.plist */,
 				3FF6AB5E2D590DFE00623917 /* rufkianApp.swift */,
 				3F4605172D5E18E40083EC96 /* CallView.swift */,
 				3F4605192D5E19070083EC96 /* CompanionView.swift */,
@@ -279,8 +281,10 @@
 				DEVELOPMENT_TEAM = L3S5H274HV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = rufkian/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = rufkian;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "AI can communicate with you via speech";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "AI can communicate with you via speech";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -312,8 +316,10 @@
 				DEVELOPMENT_TEAM = L3S5H274HV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = rufkian/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = rufkian;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "AI can communicate with you via speech";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "AI can communicate with you via speech";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -58,8 +58,9 @@ struct WebView: UIViewRepresentable {
         Coordinator(self)
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKDownloadDelegate {
         var parent: WebView
+        var lastFileURL: URL?
 
         init(_ parent: WebView) {
             self.parent = parent
@@ -78,6 +79,37 @@ struct WebView: UIViewRepresentable {
             } else {
                 decisionHandler(.allow)
             }
+        }
+        
+        func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+            download.delegate = self
+        }
+        
+        func download(_ download: WKDownload, decideDestinationUsing response: URLResponse, suggestedFilename: String, completionHandler: @escaping (URL?) -> Void) {
+            let fileManager = FileManager.default
+            if let documentDirectory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) {
+                var fileUrl = documentDirectory.appendingPathComponent(suggestedFilename)
+                
+                var idx = 1
+                while FileManager().fileExists(atPath: fileUrl.path) {
+                    fileUrl = documentDirectory.appendingPathComponent("\(idx)_\(suggestedFilename)")
+                    idx += 1
+                }
+                
+                self.lastFileURL = fileUrl
+                
+                print(fileUrl)
+                print("downloading", suggestedFilename)
+                completionHandler(fileUrl)
+            }
+        }
+        
+        func downloadDidFinish(_ download: WKDownload) {
+            print("downloaded")
+        }
+        
+        func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
+            print("\(error.localizedDescription)")
         }
     }
 }
