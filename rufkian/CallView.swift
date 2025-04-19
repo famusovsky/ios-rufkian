@@ -2,7 +2,7 @@
 //  CallView.swift
 //  rufkian
 //
-//  Created by Алексей Степанов on 2025-02-13.
+//  Created by Aleksei Stepanov on 2025-02-13.
 //
 
 import Combine
@@ -12,7 +12,6 @@ import Speech
 struct CallView: View {
     @ObservedObject var speechRec = SpeechHandler()
     @Binding var presentedAsModal: Bool
-    
     @State private var timerString: String?
     @State private var startTime: Date?
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -20,15 +19,15 @@ struct CallView: View {
     var body: some View {
         VStack {
             Spacer()
-            
             Text(timerString ?? "")
                 .onAppear() {
                     timerString = "00:00"
                     startTime = Date()
                 }
-                .onReceive(timer) { _ in timerString = Date().passedTime(from: startTime!) }
+                .onReceive(timer) { _ in 
+                    timerString = Date().passedTime(from: startTime!) 
+                }
                 .font(Font.system(.largeTitle, design: .monospaced))
-            
             Text("Вы сказали: ")
             Text(speechRec.userInput)
             Spacer()
@@ -45,7 +44,6 @@ struct CallView: View {
             .controlSize(.extraLarge)
             .buttonBorderShape(.roundedRectangle)
             .tint(.red)
-            
             Spacer()
         }
         .onAppear {
@@ -58,7 +56,6 @@ struct CallView: View {
 }
 
 class SpeechHandler: ObservableObject {
-    // TODO make empty
     @Published private(set) var userInput = ""
     @Published private(set) var aiOutput = ""
     private var recognizedTextTimer: Timer?
@@ -131,9 +128,7 @@ class SpeechHandler: ObservableObject {
 
             audioEngine.prepare()
             try audioEngine.start()
-        }
-
-        catch {
+        } catch {
             print("start recognition error")
             // TODO catch error
         }
@@ -151,7 +146,7 @@ class SpeechHandler: ObservableObject {
             if let inputCopy = self?.userInput {
                 Task {
                     do {
-                        try await getResponse(input: inputCopy, completionHandler: { response in
+                        try await getResponse(input: inputCopy) { response in
                             self?.aiOutput = response.answer
                             if response.status == "OK" {
                                 let utterance = AVSpeechUtterance(string: response.answer)
@@ -163,7 +158,7 @@ class SpeechHandler: ObservableObject {
                             } else {
                                 print("got non OK status from telephonist: \(response.status)")
                             }
-                        })
+                        }
                     } catch {
                         print("API call failed: \(error)")
                     }
@@ -174,11 +169,11 @@ class SpeechHandler: ObservableObject {
     }
 }
 
-struct PostRequest: Encodable {
+private struct PostRequest: Encodable {
     let input: String
 }
 
-struct PostResponse: Decodable {
+private struct PostResponse: Decodable {
     let answer: String
     let status: String
 }
@@ -193,7 +188,7 @@ private func getResponse(input: String, completionHandler:@escaping (_ response:
     request.httpBody = try? JSONEncoder().encode(PostRequest(input: input))
 
     let session = URLSession.shared
-    let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+    let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
         if let error = error {
             print(error)
         } else {
@@ -211,13 +206,13 @@ private func getResponse(input: String, completionHandler:@escaping (_ response:
         if let result = result {
             completionHandler(result)
         }
-    })
+    }
 
     dataTask.resume()
 }
 
 
-struct DeleteResponse: Decodable {
+private struct DeleteResponse: Decodable {
     let status: String
 }
 
@@ -230,7 +225,7 @@ private func deleteAiCall() -> Void {
     request.httpMethod = "DELETE"
 
     let session = URLSession.shared
-    let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+    let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
         if let error = error {
             print(error)
         } else {
@@ -241,16 +236,16 @@ private func deleteAiCall() -> Void {
         var result: DeleteResponse?
         do {
             result = try JSONDecoder().decode(DeleteResponse.self, from: data ?? Data())
-        }
-        catch {
+        } catch {
             // TODO actualy do smth
             print("Failed to convert JSON \(error)")
         }
+        
         if let result = result {
             // TODO actually do smth
             print(result.status)
         }
-    })
+    }
 
     dataTask.resume()
 }

@@ -2,7 +2,7 @@
 //  CompanionView.swift
 //  rufkian
 //
-//  Created by Алексей Степанов on 2025-02-13.
+//  Created by Aleksei Stepanov on 2025-02-13.
 //
 
 import SwiftUI
@@ -75,8 +75,7 @@ struct WebView: UIViewRepresentable {
             if url.absoluteString.starts(with: "http://localhost:8080/call") {
                 decisionHandler(.cancel)
                 parent.showingCall = true
-            }
-            else {
+            } else {
                 decisionHandler(.allow)
             }
         }
@@ -91,8 +90,4 @@ class CookieSyncManager: NSObject, WKHTTPCookieStoreObserver {
             }
         }
     }
-}
-
-#Preview {
-    CompanionView()
 }

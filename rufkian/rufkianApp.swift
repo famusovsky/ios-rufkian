@@ -2,11 +2,13 @@
 //  rufkianApp.swift
 //  rufkian
 //
-//  Created by Алексей Степанов on 2025-02-09.
+//  Created by Aleksei Stepanov on 2025-02-09.
 //
 
 import SwiftUI
 import SwiftData
+
+// TODO store link to the companion and telephonist somewhere
 
 @main
 struct rufkianApp: App {
