@@ -86,7 +86,6 @@ struct WebView: UIViewRepresentable {
         }
         
         func download(_ download: WKDownload, decideDestinationUsing response: URLResponse, suggestedFilename: String, completionHandler: @escaping (URL?) -> Void) {
-            let fileManager = FileManager.default
             if let documentDirectory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) {
                 var fileUrl = documentDirectory.appendingPathComponent(suggestedFilename)
                 

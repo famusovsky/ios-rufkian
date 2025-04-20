@@ -74,7 +74,7 @@ class SpeechHandler: ObservableObject {
         $userInput
             .sink { [weak self] newText in
                 print("new text", newText)
-                print("user input", self?.userInput)
+                print("user input", self?.userInput ?? "")
                 if self?.userInput != "" {
                     self?.resetTimer()
                 }
