@@ -8,8 +8,6 @@
 import SwiftUI
 import SwiftData
 
-// TODO store link to the companion and telephonist somewhere
-
 @main
 struct rufkianApp: App {
     init() {

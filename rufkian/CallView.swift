@@ -111,7 +111,7 @@ class SpeechHandler: ObservableObject {
 
             recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
                 if let result = result {
-                    self.speechSynth.stopSpeaking(at: .immediate) // TODO possibly must implement continue
+                    self.speechSynth.stopSpeaking(at: .immediate)
                     self.userInput = result.bestTranscription.formattedString
                 }
             }
@@ -131,7 +131,6 @@ class SpeechHandler: ObservableObject {
             try audioEngine.start()
         } catch {
             print("start recognition error")
-            // TODO catch error
         }
     }
     
@@ -194,7 +193,6 @@ private func getResponse(input: String, completionHandler:@escaping (_ response:
             print(error)
         } else {
             _ = response as? HTTPURLResponse
-            // TODO check response status
         }
 
         var result: PostResponse?
@@ -231,19 +229,16 @@ private func deleteAiCall() -> Void {
             print(error)
         } else {
             _ = response as? HTTPURLResponse
-            // TODO check response status
         }
 
         var result: DeleteResponse?
         do {
             result = try JSONDecoder().decode(DeleteResponse.self, from: data ?? Data())
         } catch {
-            // TODO actualy do smth
             print("Failed to convert JSON \(error)")
         }
         
         if let result = result {
-            // TODO actually do smth
             print(result.status)
         }
     }
