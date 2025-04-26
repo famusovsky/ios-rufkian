@@ -179,7 +179,7 @@ private struct PostResponse: Decodable {
 }
 
 private func getResponse(input: String, completionHandler:@escaping (_ response:PostResponse)->Void) async throws -> Void {
-    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8888")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+    let request = NSMutableURLRequest(url: NSURL(string: "https://telephonist.rufkian.ru")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
     for field in HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? []) {
@@ -217,7 +217,7 @@ private struct DeleteResponse: Decodable {
 }
 
 private func deleteAiCall() -> Void {
-    let request = NSMutableURLRequest(url: NSURL(string: "http://127.0.0.1:8888")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+    let request = NSMutableURLRequest(url: NSURL(string: "https://telephonist.rufkian.ru")! as URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     for field in HTTPCookie.requestHeaderFields(with: HTTPCookieStorage.shared.cookies ?? []) {
         request.setValue(field.value, forHTTPHeaderField: field.key)

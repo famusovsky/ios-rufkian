@@ -15,7 +15,7 @@ struct CompanionView: View {
         NavigationView {
             VStack {
                 Spacer()
-                WebView(url: URL(string: "http://localhost:8080")!, showingCall: $showingCall)
+                WebView(url: URL(string: "https://www.rufkian.ru")!, showingCall: $showingCall)
                 Spacer()
                 .fullScreenCover(isPresented: $showingCall) {
                     CallView(presentedAsModal: $showingCall)
@@ -73,7 +73,7 @@ struct WebView: UIViewRepresentable {
             }
 
             print(url)
-            if url.absoluteString.starts(with: "http://localhost:8080/call") {
+            if url.absoluteString.starts(with: "https://www.rufkian.ru/call") {
                 decisionHandler(.cancel)
                 parent.showingCall = true
             } else {
