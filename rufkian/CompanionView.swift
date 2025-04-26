@@ -114,7 +114,12 @@ struct WebView: UIViewRepresentable {
         }
         
         func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-          scrollView.pinchGestureRecognizer?.isEnabled = false
+            scrollView.pinchGestureRecognizer?.isEnabled = false
+        }
+        
+        func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+            scrollView.setZoomScale(0.1, animated: false);
+            scrollView.setContentOffset(CGPoint(x: 0,y: 0), animated: false);
         }
     }
 }
