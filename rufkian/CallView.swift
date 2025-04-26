@@ -68,7 +68,7 @@ class SpeechHandler: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     init() {
-        try! AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        try! AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat)
         try! AVAudioSession.sharedInstance().setActive(true)
 
         $userInput
@@ -122,6 +122,7 @@ class SpeechHandler: ObservableObject {
                 return
             }
             
+            try audioEngine.inputNode.setVoiceProcessingEnabled(true)
             audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
                 recognitionRequest.append(buffer)
             }
