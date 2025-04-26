@@ -45,6 +45,8 @@ struct WebView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.configuration.websiteDataStore.httpCookieStore.add(cookieSyncManager)
         webView.navigationDelegate = context.coordinator
+        webView.scrollView.isMultipleTouchEnabled = false
+        webView.scrollView.delegate = context.coordinator
         webView.customUserAgent = "rufkian"
         webView.load(URLRequest(url: url))
         
@@ -58,7 +60,7 @@ struct WebView: UIViewRepresentable {
         Coordinator(self)
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate, WKDownloadDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKDownloadDelegate, UIScrollViewDelegate {
         var parent: WebView
         var lastFileURL: URL?
 
@@ -109,6 +111,10 @@ struct WebView: UIViewRepresentable {
         
         func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
             print("\(error.localizedDescription)")
+        }
+        
+        func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+          scrollView.pinchGestureRecognizer?.isEnabled = false
         }
     }
 }
